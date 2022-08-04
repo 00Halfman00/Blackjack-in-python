@@ -1,0 +1,35 @@
+concerning the game: black_jack.py,
+###################################################  SETUP THE GAME  ###########################################################
+1. there is a Card class to create a 'card'.
+2. there is a Deck class to create a 'deck of cards'.
+	a. the deck consist of 52 cards (number cards have a value of their respective number, face cards are worth 10 points, and an ace is 1 or 11 points)
+	b. the Deck class has a method to shuffle the deck of cards
+	c. the Deck class has a method to deal a card out from the deck
+3. there is a Player class that takes a name and an amount of money to play with and a list of cards for the player and the total value of those cards
+	a. the Deck class has a hand method to add cards to his current list of cards
+	b. the Deck class has a bet method to place a bet from the amount of money that player has
+4. there is a user_input function to receive input from player on the amount of money to bet
+5. there is an invite function to ask player if he/she wants to play Blackjack.
+
+#####################################################  GAME LOGIC  ##############################################################
+
+1. invite player to game
+2. create deck via Deck class and shuffle it a couple of times
+3. gather input for name and amount of money from player, then create player via Player class
+4. create a winner variable which is empty and loop thru game till there is a winner  ###########  LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOP 1 ############
+5. create an empty list to represent dealer's cards (maybe one should create an instance of the Player class for the dealer)
+6. ask player to place a bet and if valid, deal two cards to player and dealer
+7. create a gamble variable which is empty and loop thru game till if condition is met  ############ LOOOOOOOOOOOOOOOOOOOOOOOOOOOOP 2 ############
+	a. if gamble == 'hit'                (done, except for Ace counting for 1 and 11)
+	b. if gamble == 'stand'              (done, except for Ace counting for 1 and 11)
+	c. if gamble == 'double down'
+	d. if gamble == 'split'
+	e. if gamble == 'surrender'          (done)
+
+
+
+#################################################### LIMITATIONS OF CURRENT GAME LOGIC  ###########################################
+
+1. In Blackjack, an Ace card can be either 1 point or 11 points. The current setup accounts for the former and not the latter, so needs fixing.
+	a. need to find a dynamic way of counting the value of cards
+2. The player enters a name and an amount; seems logical that the same player could keep playing, if he/she wants, till out of money, yet not the case now.
