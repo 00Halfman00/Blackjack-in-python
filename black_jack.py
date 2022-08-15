@@ -43,7 +43,6 @@ class Player(): # create a player class that takes a name,amount of money, and h
         self.amount = amount
         self.cards = []
         self.total_value = 0
-        self.total_value11 = 0
         
     def hand(self, card):
         if type(card) == list:
@@ -98,17 +97,21 @@ while invite():
         except ValueError:
             clear_output()
     player_one = Player(name001, amount001)
+    dealer = Player('dealer', 0)
     winner = ''
     while not winner:
-        dealer = Player('dealer', 0)
         betting = user_input()
         if player_one.bet(betting):
             player_one.hand([game_deck.deal_one(), game_deck.deal_one()])
             player_one.total_value += player_one.cards[-1].value
             player_one.total_value += player_one.cards[-2].value
+            if player_one.total_value == 22:
+                player_one.total_value -= 10
             dealer.hand([game_deck.deal_one(), game_deck.deal_one()])
             dealer.total_value += dealer.cards[-1].value
             dealer.total_value += dealer.cards[-2].value
+            if dealer.total_value == 22:
+                dealer.total_value -= 10
         print(f"{player_one.name}'s cards: {player_one.cards[-1]} and {player_one.cards[-2]}")
         print(f"dealer's cards: {dealer.cards[-1]}")
         
@@ -117,11 +120,13 @@ while invite():
         gamble = ''
         house = 'House wins!\nBetter luck next time, '+player_one.name+'.'
         while not gamble:
-            try:
-                clear_output()
-                gamble = input("What do you want to do?  (hit, stand, double down, split, surrender) type your choice...    ")
-            except ValueError:
-                print('type one of the aforementioned options.')
+            clear_output()
+            if player_one.total_value:
+                 print(f'{player_one.name} has {player_one.total_value} points.')
+            gamble = input("What do you want to do?  (hit, stand, double down, split, surrender) type your choice...    ")
+            if gamble not in gambles:
+                gamble = ''
+                continue
             print(f'{gamble} it is, {player_one.name}.')
             if gamble == 'hit':           ##################################################################################
                 clear_output()
@@ -133,10 +138,24 @@ while invite():
                 for card in player_one.cards:
                     print('your card '+str(count)+ ' is ' +str(card))
                     if card.value == 11 and player_one.total_value > 21:
-                        player_one.total_vallue -= 10
+                        player_one.total_value -= 10
                     count += 1
               
-                if player_one.total_value > 21 and player_one.total_value11 > 21:
+                if player_one.total_value > 21:
+                    num = 0
+                    score = 0
+                    for card in player_one.cards:
+                        if card.value == 11 and num > 0:
+                            score += 1
+                            num += 1
+                            continue
+                        if card.value == 11:
+                            num += 1
+                            continue
+                        score += card.value
+                    if score <= 21:
+                        player_one.total_value = score
+                        continue
                     print('You have gone over, '+player_one.name+'.')
                     winner = 'house'
                     print(house)
@@ -145,19 +164,25 @@ while invite():
                     gamble = ''
                     continue
             elif gamble == 'stand':       ##################################################################################
-                print('dealer.total_value: ', dealer.total_value)
-                while dealer.total_value <= player_one.total_value:
+                print('Dealer.total_value: ', dealer.total_value)
+                for card in dealer.cards:
+                    print(card)
+                if dealer.total_value > player_one.total_value:
+                    winner = 'house'
+                    print(house)
+                    break
+                while dealer.total_value < player_one.total_value:
                     dealer.hand(game_deck.deal_one())
                     dealer.total_value += dealer.cards[-1].value
-                    clear_output()
                     count = 1
                     print('dealer.total_value: ', dealer.total_value)
                     for card in dealer.cards:
                         print('dealer card '+str(count)+' is '+str(card))
                         if card.value == 11 and dealer.total_value > 21:
-                            dealer.total_vallue -= 10
+                            dealer.total_value -= 10
                         count += 1
                         if dealer.total_value > player_one.total_value and dealer.total_value <= 21:
+                            print(dealer.cards[-1])
                             winner = 'house'
                             print(house)
                             print('dealer.total_value: ', dealer.total_value)
@@ -166,6 +191,10 @@ while invite():
                     winner = player_one.name
                     print(f'Bust\n{player_one.name} wins!')
                     print('dealer.total_value: ', dealer.total_value)
+                    break
+                elif dealer.total_value == player_one.total_value:
+                    print("It's a tie! Nobody wins or loses.")
+                    winner = 'bananas'
                     break
 
             elif gamble == 'double down':     #############################################################################
